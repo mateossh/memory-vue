@@ -1,75 +1,109 @@
 <template>
   <div class="gameBoard">
-    <Card class="c11"/>
-    <Card class="c12"/>
-    <Card class="c13"/>
-    <Card class="c14"/>
-
-    <Card class="c21"/>
-    <Card class="c22"/>
-    <Card class="c23"/>
-    <Card class="c24"/>
-
-    <Card class="c31"/>
-    <Card class="c32"/>
-    <Card class="c33"/>
-    <Card class="c34"/>
-
-    <Card class="c41"/>
-    <Card class="c42"/>
-    <Card class="c43"/>
-    <Card class="c44"/>
-
+    <Card v-for="card in activeCards"
+          :key="card.key"
+          :image="card.image"
+          :imageBase64="cardImages[card.image]"
+          :class="[ card.class, {'card--selected': selectedCards.includes(card.class)} ]"
+          @click="onCardClick(card.class, card.image)" />
   </div>
 </template>
 
 <script>
 import Card from './Card.vue';
+//import store from '../store.js';
+import tomato from '../assets/cards/tomato.png';
+import cucumber from '../assets/cards/cucumber.png';
+import pencil from '../assets/cards/pencil.png';
+import person from '../assets/cards/person.png';
+import sadboi from '../assets/cards/sadboi.png';
+import sun from '../assets/cards/sun.png';
+import tree from '../assets/cards/tree.png';
+import xd from '../assets/cards/xd.png';
 
-const possibleCards = ['tomato', 'cucumber', 'pencil', 'person', 
-                       'sadboi', 'sun', 'tree', 'xd'];
-let retriesCounter = 0;
+const availableBoardCoords = ['11', '12', '13', '14', '21', '22', '23', '24', '31', '32', '33', '34', '41', '42', '43', '44'];
 
 export default {
   name: 'GameBoard',
   components: {
     Card
   },
+  data: () => ({
+    cardImages: {
+      tomato,
+      cucumber,
+      pencil,
+      person,
+      sadboi,
+      sun,
+      tree,
+      xd,
+    },
+    cardsOnBoard: [],
+    selectedCards: [],
+    selectedCardsImages: [],
+    solvedPairs: [],
+  }),
   mounted() {
-    console.log('mounted ;)');
-
-    this.generateBoard(); // TODO: invent better board generator
+    this.generateBoard();
+  },
+  computed: {
+    activeCards() {
+      // return array with all cards - cards with images from solvedPairs
+      return this.cardsOnBoard.filter(n => !this.solvedPairs.includes(n.image));
+    },
   },
   methods: {
     getRandomInt(min, max) {
       return Math.floor(Math.random() * (max - min + 1)) + min;
     },
+    onCardClick(className, image) {
+      if (this.selectedCards.length < 2) {
+        // TODO: add ability unselect card
+        this.selectedCards.push(className);
+        this.selectedCardsImages.push(image);
+      }
+
+      if (this.selectedCards.length == 2) {
+        this.handleCardsMatching(className, image);
+      }
+    },
+    handleCardsMatching(className, image) {
+      if (this.selectedCardsImages[0] === this.selectedCardsImages[1]) {
+        // NOTE: if you omit 'setTimeout' there - user won't see second
+        //       selected item (I have no idea why)
+        const that = this;
+        setTimeout(function() {
+          that.solvedPairs.push(image);
+          that.clearSelection();
+        }, 0);
+      }
+      if (this.selectedCards.length === 2) {
+        const that = this;
+        setTimeout(function() {
+          that.clearSelection();
+        }, 0);
+      }
+    },
+    clearSelection() {
+      this.selectedCards = [];
+      this.selectedCardsImages = [];
+    },
     generateBoard() {
+      const possibleCards = Object.keys(this.cardImages);
+
       for (let i = 0; i < possibleCards.length; i++) {
-        const first = this.getRandomInt(0, 15);
-        const second = this.getRandomInt(0, 15);
-        console.log('XXXX', possibleCards[i], first+1, second+1, this.$children[first].image, this.$children[second].image);
+        for (let j = 0; j < 2; j++) {
+          const index = this.getRandomInt(0, availableBoardCoords.length-1);
 
-        if (first === second) {
-          console.log('first === second !!!! restarting loop');
-          i--;
-          retriesCounter++;
-          continue;
-        }
-
-        if (this.$children[first].image !== '' || this.$children[second].image !== '') {
-          console.log('first === second !!!! restarting loop');
-          i--;
-          retriesCounter++;
-          continue;
-        }
-
-        if (this.$children[first].image === '' && this.$children[second].image === '') {
-          this.$children[first].image = possibleCards[i];
-          this.$children[second].image = possibleCards[i];
+          this.cardsOnBoard.push({
+            key: parseInt(`${i.toString()}${j.toString()}`),
+            image: possibleCards[i],
+            class: `c${availableBoardCoords[index]}`
+          });
+          availableBoardCoords.splice(index, 1);
         }
       }
-      console.log('XXXX: generating finished retriesCounter', retriesCounter);
     }
   }
 }
