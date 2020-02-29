@@ -1,4 +1,4 @@
-<template>
+<template functional>
   <header class="header">
     <h1 class="header__title">Memory</h1>
   </header>
@@ -12,6 +12,11 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.header {}
-.header__title {}
+.header {
+  margin: 32px;
+}
+.header__title {
+  font-size: 48px;
+  margin: 0;
+}
 </style>

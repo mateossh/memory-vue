@@ -1,17 +1,19 @@
 <template>
-  <div class="gameBoard">
+  <section class="gameBoard">
     <Card v-for="card in activeCards"
           :key="card.key"
           :image="card.image"
           :imageBase64="cardImages[card.image]"
-          :class="[ card.class, {'card--selected': selectedCards.includes(card.class)} ]"
+          :class="[ card.class,
+                  {'card--selected': selectedCards.some(c => c.class === card.class)},
+                  {'card--validPair': currentValidPairImage === card.image }
+                  ]"
           @click="onCardClick(card.class, card.image)" />
-  </div>
+  </section>
 </template>
 
 <script>
 import Card from './Card.vue';
-//import store from '../store.js';
 import tomato from '../assets/cards/tomato.png';
 import cucumber from '../assets/cards/cucumber.png';
 import pencil from '../assets/cards/pencil.png';
@@ -41,16 +43,16 @@ export default {
     },
     cardsOnBoard: [],
     selectedCards: [],
-    selectedCardsImages: [],
     solvedPairs: [],
+    isClickDisabled: false,
+    currentValidPairImage: '',
   }),
   mounted() {
     this.generateBoard();
   },
   computed: {
     activeCards() {
-      // return array with all cards - cards with images from solvedPairs
-      return this.cardsOnBoard.filter(n => !this.solvedPairs.includes(n.image));
+      return this.cardsOnBoard.filter(card => !this.solvedPairs.includes(card.image));
     },
   },
   methods: {
@@ -58,36 +60,34 @@ export default {
       return Math.floor(Math.random() * (max - min + 1)) + min;
     },
     onCardClick(className, image) {
-      if (this.selectedCards.length < 2) {
-        // TODO: add ability unselect card
-        this.selectedCards.push(className);
-        this.selectedCardsImages.push(image);
+      if (this.selectedCards.length < 2 && !this.isClickDisabled) {
+        // NOTE: De Morgan's law -> this.selectedCards.length == 1 && this.selectedCards[0].class === className
+        if (this.selectedCards.length != 1 || this.selectedCards[0].class !== className) {
+          this.selectedCards.push({ class: className, image });
+        }
       }
 
-      if (this.selectedCards.length == 2) {
-        this.handleCardsMatching(className, image);
-      }
+      if (!this.isClickDisabled) this.handleCardsMatching(className, image);
     },
     handleCardsMatching(className, image) {
-      if (this.selectedCardsImages[0] === this.selectedCardsImages[1]) {
-        // NOTE: if you omit 'setTimeout' there - user won't see second
-        //       selected item (I have no idea why)
-        const that = this;
-        setTimeout(function() {
-          that.solvedPairs.push(image);
-          that.clearSelection();
-        }, 0);
+      if (this.selectedCards[0].image === this.selectedCards[1].image) {
+        this.isClickDisabled = true;
+        setTimeout(() => { this.currentValidPairImage = image }, 300 );
+        setTimeout(() => {
+          this.isClickDisabled = false;
+          this.solvedPairs.push(image);
+          this.clearSelection();
+        }, 550);
       }
       if (this.selectedCards.length === 2) {
-        const that = this;
-        setTimeout(function() {
-          that.clearSelection();
-        }, 0);
+        setTimeout(() => {
+          this.isClickDisabled = false;
+          this.clearSelection();
+        }, 550);
       }
     },
     clearSelection() {
       this.selectedCards = [];
-      this.selectedCardsImages = [];
     },
     generateBoard() {
       const possibleCards = Object.keys(this.cardImages);
@@ -109,16 +109,19 @@ export default {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .gameBoard {
-  width: 400px;
-  height: 400px;
+  width: 460px;
+  height: 460px;
+  background-color: #ffb6b9;
   margin: 0 auto;
-  border: 1px solid black;
+  padding: 6px;
+  border: 0;
+  border-radius: 7px;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
   grid-template-rows: 1fr 1fr 1fr 1fr;
+  perspective: 6000px;
 }
 
 .c11 { grid-area: 1 / 1 / 1 / 1; }
