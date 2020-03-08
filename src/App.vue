@@ -1,8 +1,8 @@
 <template>
   <div id="app">
     <Header />
-    <GameBoard />
-    <Footer />
+    <GameBoard @counter="onCounterChange" />
+    <Footer :movesCounter="movesCounter" />
   </div>
 </template>
 
@@ -17,12 +17,23 @@ export default {
     Header,
     GameBoard,
     Footer,
-  }
+  },
+  data: () => ({
+    movesCounter: 0,
+  }),
+  mounted() {
+    console.log('%cPlease don\'t cheat!!!', "font-size: 32px; color: red");
+  },
+  methods: {
+    onCounterChange(counter) {
+      this.movesCounter = counter;
+    }
+  },
 }
 </script>
 
 <style>
-@import url('https://fonts.googleapis.com/css?family=Raleway&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Fredoka+One&display=swap');
 
 body {
   background-color: #f4dada;
@@ -31,7 +42,7 @@ body {
 }
 
 #app {
-  font-family: 'Raleway', Helvetica, Arial, sans-serif;
+  font-family: 'Fredoka One', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;

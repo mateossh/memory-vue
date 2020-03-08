@@ -1,29 +1,25 @@
 <template>
-  <section class="gameBoard">
-    <Card v-for="card in activeCards"
-          :key="card.key"
-          :image="card.image"
-          :imageBase64="cardImages[card.image]"
-          :class="[ card.class,
-                  {'card--selected': selectedCards.some(c => c.class === card.class)},
-                  {'card--validPair': currentValidPairImage === card.image }
-                  ]"
-          @click="onCardClick(card.class, card.image)" />
-  </section>
+  <main>
+    <section class="gameBoard">
+      <Card v-for="card in remainingCardsOnBoard"
+            :key="card.key"
+            :image="card.image"
+            :class="[ card.class,
+                    {'card--selected': selectedCards.some(c => c.class === card.class)},
+                    {'card--validPair': currentValidPairImage === card.image }
+                    ]"
+            @click="onCardClick(card.class, card.image)" />
+      <div v-if="isGameOver" class="modal">
+        <div class="modal__content">
+          <div class="modal__button" @click="playAgain()">Play Again</div>
+        </div>
+      </div>
+    </section>
+  </main>
 </template>
 
 <script>
 import Card from './Card.vue';
-import tomato from '../assets/cards/tomato.png';
-import cucumber from '../assets/cards/cucumber.png';
-import pencil from '../assets/cards/pencil.png';
-import person from '../assets/cards/person.png';
-import sadboi from '../assets/cards/sadboi.png';
-import sun from '../assets/cards/sun.png';
-import tree from '../assets/cards/tree.png';
-import xd from '../assets/cards/xd.png';
-
-const availableBoardCoords = ['11', '12', '13', '14', '21', '22', '23', '24', '31', '32', '33', '34', '41', '42', '43', '44'];
 
 export default {
   name: 'GameBoard',
@@ -31,27 +27,25 @@ export default {
     Card
   },
   data: () => ({
-    cardImages: {
-      tomato,
-      cucumber,
-      pencil,
-      person,
-      sadboi,
-      sun,
-      tree,
-      xd,
-    },
+    cardImages: ['FeatherIcon', 'HeartIcon', 'HomeIcon', 'HeadphonesIcon', 'SunIcon', 'MoonIcon', 'ImageIcon', 'LayersIcon'],
+    availableBoardCoords: ['11', '12', '13', '14', '21', '22', '23', '24', '31', '32', '33', '34', '41', '42', '43', '44'],
     cardsOnBoard: [],
     selectedCards: [],
     solvedPairs: [],
     isClickDisabled: false,
+    isGameOver: false,
     currentValidPairImage: '',
+    movesCounter: 0,
   }),
   mounted() {
     this.generateBoard();
   },
+  updated() {
+    if (this.remainingCardsOnBoard.length === 0) this.isGameOver = true;
+    this.$emit('counter', this.movesCounter);
+  },
   computed: {
-    activeCards() {
+    remainingCardsOnBoard() {
       return this.cardsOnBoard.filter(card => !this.solvedPairs.includes(card.image));
     },
   },
@@ -70,16 +64,15 @@ export default {
       if (!this.isClickDisabled) this.handleCardsMatching(className, image);
     },
     handleCardsMatching(className, image) {
-      if (this.selectedCards[0].image === this.selectedCards[1].image) {
-        this.isClickDisabled = true;
-        setTimeout(() => { this.currentValidPairImage = image }, 300 );
-        setTimeout(() => {
-          this.isClickDisabled = false;
-          this.solvedPairs.push(image);
-          this.clearSelection();
-        }, 550);
-      }
       if (this.selectedCards.length === 2) {
+        this.movesCounter++;
+
+        if (this.selectedCards[0].image === this.selectedCards[1].image) {
+          this.isClickDisabled = true;
+          setTimeout(() => { this.currentValidPairImage = image; }, 300);
+          setTimeout(() => { this.solvedPairs.push(image); }, 550);
+        }
+
         setTimeout(() => {
           this.isClickDisabled = false;
           this.clearSelection();
@@ -89,19 +82,27 @@ export default {
     clearSelection() {
       this.selectedCards = [];
     },
+    playAgain() {
+      this.availableBoardCoords = ['11', '12', '13', '14', '21', '22', '23', '24', '31', '32', '33', '34', '41', '42', '43', '44'];
+      this.isGameOver = false;
+      this.cardsOnBoard = [];
+      this.solvedPairs = [];
+      this.selectedCards = [];
+      this.currentValidPairImage = '';
+      this.movesCounter = 0;
+      this.generateBoard();
+    },
     generateBoard() {
-      const possibleCards = Object.keys(this.cardImages);
-
-      for (let i = 0; i < possibleCards.length; i++) {
-        for (let j = 0; j < 2; j++) {
-          const index = this.getRandomInt(0, availableBoardCoords.length-1);
+      for (let cardImagesIndex = 0; cardImagesIndex < this.cardImages.length; cardImagesIndex++) {
+        for (let i = 0; i < 2; i++) {
+          const coordIndex = this.getRandomInt(0, this.availableBoardCoords.length-1);
 
           this.cardsOnBoard.push({
-            key: parseInt(`${i.toString()}${j.toString()}`),
-            image: possibleCards[i],
-            class: `c${availableBoardCoords[index]}`
+            key: parseInt(`${cardImagesIndex.toString()}${i.toString()}`),
+            image: this.cardImages[cardImagesIndex],
+            class: `c${this.availableBoardCoords[coordIndex]}`
           });
-          availableBoardCoords.splice(index, 1);
+          this.availableBoardCoords.splice(coordIndex, 1);
         }
       }
     }
@@ -144,4 +145,20 @@ export default {
 .c43 { grid-area: 4 / 3 / 4 / 3; }
 .c44 { grid-area: 4 / 4 / 4 / 4; }
 
+.modal {
+  grid-area: 1 / 1 / 5 / 5;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.modal__content {}
+.modal__button {
+  padding: 12px 24px;
+  margin: 24px;
+  font-size: 36px;
+  border: 0;
+  border-radius: 7px;
+  background-color: #f6eec7;
+  display: inline-block;
+}
 </style>

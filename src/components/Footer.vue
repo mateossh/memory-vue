@@ -1,19 +1,28 @@
-<template functional>
+<template>
   <footer class="footer">
-    Made by <a class="footer__link" href="#">Mateusz Ż</a>
+    <div class="footer__text--left">Moves: {{ movesCounter }}</div>
+    <div class="footer__text--right">
+      Made by <a class="footer__link" href="https://mateossh.me" target="_blank" rel="noopener noreferrer">Mateusz</a> | <a class="footer__link" href="https://github.com/mateossh/memory" target="_blank" rel="noopener noreferrer">Source code</a>
+    </div>
   </footer>
 </template>
 
 <script>
 export default {
   name: 'Footer',
+  props: {
+    movesCounter: Number,
+  },
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .footer {
-  margin: 32px 0;
+  width: 460px;
+  margin: 32px auto;
+  display: flex;
+  justify-content: space-between;
 }
 
 .footer__link {
@@ -30,7 +39,7 @@ export default {
   right: 0;
   margin: auto;
   width: 86%;
-  height: 1px;
+  height: 2px;
   background-color: #233240;
 }
 </style>

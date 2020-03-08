@@ -2,16 +2,37 @@
   <div class="card" @click="$emit('click')">
     <div class="card__face card__face--front"></div>
     <div class="card__face card__face--back">
-      <img :src="imageBase64" />
+      <component v-bind:is="image" size="3x" class="card__icon"></component>
     </div>
   </div>
 </template>
 
 <script>
+import {
+  FeatherIcon,
+  HeartIcon,
+  HomeIcon,
+  HeadphonesIcon,
+  SunIcon,
+  MoonIcon,
+  ImageIcon,
+  LayersIcon,
+} from 'vue-feather-icons';
+
 export default {
   name: 'Card',
+  components: {
+    FeatherIcon, //eslint-disable-line
+    HeartIcon, //eslint-disable-line
+    HomeIcon, //eslint-disable-line
+    HeadphonesIcon, //eslint-disable-line
+    SunIcon, //eslint-disable-line
+    MoonIcon, //eslint-disable-line
+    ImageIcon, //eslint-disable-line
+    LayersIcon, //eslint-disable-line
+  },
   props: {
-    imageBase64: String,
+    image: String,
   },
 }
 </script>
@@ -49,13 +70,16 @@ export default {
   height: 100%;
   position: absolute;
   backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 .card__face--front {}
 .card__face--back {
   transform: rotateY(180deg);
 }
-.card__face--back img {
-  border-radius: 7px;
+.card__icon {
+  margin: 0 auto;
 }
 .card--selected {
   transform: rotateY(180deg);
