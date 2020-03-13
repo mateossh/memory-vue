@@ -1,24 +1,23 @@
-# memory
+<h1 align="center">Memory</h1>
 
-## Project setup
-```
-npm install
-```
+<p align="center">
+Memory game written in Vue
+<br />
+<br />
+<img src="https://mateossh.me/memory/showcase.gif" alt="Showcase" style="max-width:100%;">
+</p>
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+### Demo
 
-### Compiles and minifies for production
-```
-npm run build
-```
+[You can play the game here](https://mateossh.me/memory)
 
-### Lints and fixes files
-```
-npm run lint
-```
+### Dependencies
+This project uses [Vue](https://vuejs.org) and [Feather icons](https://feathericons.com)
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### Setup and compilation
+
+1. `npm install`
+2. `npm run serve`
+
+If you want to build files use, first edit `publicPath` in `vue.config.js` 
+and then run `npm run build`.
