@@ -19,5 +19,5 @@ This project uses [Vue](https://vuejs.org) and [Feather icons](https://featheric
 1. `npm install`
 2. `npm run serve`
 
-If you want to build files use, first edit `publicPath` in `vue.config.js` 
+If you want to build project, first edit `publicPath` in `vue.config.js`
 and then run `npm run build`.
