@@ -19,8 +19,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .footer {
-  width: 460px;
-  margin: 32px auto;
+  margin: 32px 12px;
   display: flex;
   justify-content: space-between;
 }

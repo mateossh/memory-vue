@@ -112,16 +112,16 @@ export default {
 
 <style scoped>
 .gameBoard {
-  width: 460px;
-  height: 460px;
+  height: 436px;
   background-color: #ffb6b9;
   margin: 0 auto;
-  padding: 6px;
+  padding: 12px;
   border: 0;
   border-radius: 7px;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
   grid-template-rows: 1fr 1fr 1fr 1fr;
+  grid-gaps: 12px 12px;
   perspective: 6000px;
 }
 

@@ -1,8 +1,10 @@
 <template>
-  <div id="app">
-    <Header />
-    <GameBoard @counter="onCounterChange" />
-    <Footer :movesCounter="movesCounter" />
+  <div class="app-wrapper">
+    <div id="app">
+      <Header />
+      <GameBoard @counter="onCounterChange" />
+      <Footer :movesCounter="movesCounter" />
+    </div>
   </div>
 </template>
 
@@ -41,15 +43,23 @@ body {
   padding: 0;
 }
 
+.app-wrapper {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+}
+
 #app {
   font-family: 'Fredoka One', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #233240;
-  width: 100%;
-  height: 100%;
-  margin-top: 60px;
+  width: 460px;
+  margin: 0 auto;
   background-color: #f4dada;
   user-select: none;
   -webkit-user-select: none;
