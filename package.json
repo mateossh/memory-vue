@@ -5,40 +5,37 @@
   "description": "",
   "author": "",
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint",
+    "dev": "vite",
+    "serve": "vite preview",
+    "build": "vite build",
+    "lint": "eslint --ext .js,.vue --ignore-path .gitignore --fix src",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "main": "index.js",
   "dependencies": {
-    "core-js": "^3.6.4",
     "feather-icons": "^4.26.0",
     "vue": "^2.6.11",
     "vue-feather-icons": "^5.0.0"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "~4.2.0",
-    "@vue/cli-plugin-eslint": "~4.2.0",
-    "@vue/cli-service": "~4.2.0",
-    "babel-eslint": "^10.0.3",
-    "eslint": "^6.7.2",
-    "eslint-plugin-vue": "^6.1.2",
+    "@vitejs/plugin-vue": "^1.6.1",
+    "eslint": "^8.17.0",
+    "eslint-plugin-vue": "^8.7.1",
+    "vite": "^2.9.9",
+    "vite-plugin-vue2": "^2.0.1",
     "vue-svg-loader": "^0.16.0",
     "vue-template-compiler": "^2.6.11"
   },
   "eslintConfig": {
     "root": true,
     "env": {
-      "node": true
+      "node": true,
+      "es2021": true
     },
     "extends": [
       "plugin:vue/essential",
       "eslint:recommended"
     ],
-    "parserOptions": {
-      "parser": "babel-eslint"
-    },
     "rules": {}
   },
   "browserslist": [
